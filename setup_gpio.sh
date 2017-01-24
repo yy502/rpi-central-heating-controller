@@ -6,4 +6,4 @@ HW="3"
 /usr/local/bin/gpio mode $CH output
 /usr/local/bin/gpio mode $HW output
 
-echo "CH and HW pin set to output mode."
+gpio readall | grep "GPIO. [2,3]" | awk '{print $4,$9,$11}'
