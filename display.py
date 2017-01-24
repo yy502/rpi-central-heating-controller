@@ -22,7 +22,7 @@ canvas = display.canvas   # display contents are drawn onto this canvas
 #canvas.bitmap((32, 0), logo, fill=0)
 #display.flush()
 
-font = ImageFont.truetype('FreeSans.ttf', 12)
+font = ImageFont.truetype('Roboto-Light.ttf', 12)
 
 canvas.text((0, 0), time.strftime("%Y-%m-%d %H:%M %a",time.localtime(time.time())), font=font, fill=1)
 canvas.line((0, 14, 127, 14), fill=1)
