@@ -21,6 +21,13 @@ I aim to use a Raspberry Pi to provide **fine** and **remote** control of my cen
 ### Wiring ###
 
 
+### Dependencies ###
+
+#### pigpio ####
+
+(Download and install)[http://abyz.co.uk/rpi/pigpio/download.html]
+
+
 ### Command Line Back-End ###
 
 simple control commands
