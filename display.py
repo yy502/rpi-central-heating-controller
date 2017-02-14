@@ -3,6 +3,9 @@
 from oled import ssd1306
 from smbus import SMBus
 import time
+import pigpio
+import DHT22
+import urllib2
 from PIL import ImageFont, ImageDraw, Image
 
 i2cbus = SMBus(1)  # 1 = Raspberry Pi but NOT early REV1 board
@@ -45,6 +48,41 @@ def text_cell(col=None, row=0, txt="", bg=False):
     text(x,(row-1)*ROW_HEIGHT,txt,fill=(0 if bg else 1),bg=bg)
 
 
+def get_temperature():
+    """ Get room temperature from WiFi sensor or fail-over to
+        the on-board sensor.
+    """
+
+    def get_gpio_temp():
+        try:
+            pi = pigpio.pi()
+            dht22 = DHT22.sensor(pi, 24)
+            dht22.trigger()
+            time.sleep(0.2)
+            return dht22.temperature()
+        except:
+            print ">> Failed to get local temperature"
+            return -999
+
+    def get_wifi_temp():
+        try:
+            status, temp, humid = urllib2.urlopen(URL).read().strip().split(",")
+            if status == "0":
+                return float(temp)
+            else:
+                print "Sensor error"
+                return -999
+        except:
+            print "Network error"
+            return -999
+
+    wifi_temp = get_wifi_temp()
+    if wifi_temp != -999:
+        return wifi_temp
+    else:
+        return get_gpio_temp()
+
+
 def paint_canvas():
     """ Draw a new canvas with updated values, save as an image file
         and make the canvas object ready for display by OLED lib.
@@ -52,7 +90,8 @@ def paint_canvas():
     # top-right box
     canvas.rectangle((63,0,127,23), outline=1, fill=1)
     text(67, 0, time.strftime("%d/%m %H:%M",time.localtime(time.time())), fill=0)
-    text(80, 12, "20.3C", fill=0)
+    temp = get_temperature()
+    text(80, 12, "%fC" % temp if temp != -999 else 88.8, fill=0)
 
     # vertical line
     #canvas.line((63, 0, 63, 63), fill=1)
