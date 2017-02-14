@@ -7,6 +7,13 @@ import pigpio
 import DHT22
 import urllib2
 from PIL import ImageFont, ImageDraw, Image
+import logging
+
+logging.basicConfig(
+    filename="rpch.log",
+    format="%(asctime)s %(message)s",
+    level=logging.DEBUG
+    )
 
 i2cbus = SMBus(1)  # 1 = Raspberry Pi but NOT early REV1 board
 display = ssd1306(i2cbus)
@@ -61,7 +68,7 @@ def get_temperature():
             time.sleep(0.2)
             return dht22.temperature()
         except:
-            print ">> Failed to get local temperature"
+            logging.error("Failed to get local temperature")
             return -999
 
     def get_wifi_temp():
@@ -70,10 +77,10 @@ def get_temperature():
             if status == "0":
                 return float(temp)
             else:
-                print "Sensor error"
+                logging.error("Sensor error")
                 return -999
         except:
-            print "Network error"
+            logging.error("Network error")
             return -999
 
     wifi_temp = get_wifi_temp()
@@ -113,7 +120,7 @@ def paint_canvas():
 
 
 def save_bmp():
-    image.save('display.bmp','BMP')
+    image.save("display.bmp","BMP")
 
 
 if __name__ == "__main__":
