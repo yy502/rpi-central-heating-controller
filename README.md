@@ -47,3 +47,20 @@ to view room temperature, timer/temperature settings, overrides, etc.
 ### Remote Access ###
 
 external access over the Interbet with port forwarding and authentication
+
+### Watchdog ###
+
+In case RPi silently crashes and freezes, watchdog service will auto-reboot it and hopefully things will be back on track.
+Here's how to set up watchdog.
+
+    sudo modprobe bcm2708_wdog
+    echo "bcm2708_wdog" | sudo tee -a /etc/modules
+    sudo apt-get install watchdog chkconfig
+    sudo chkconfig --add watchdog
+
+    sudo vim /etc/watchdog.conf
+    # uncomment lines below
+    watchdog-device = /dev/watchdog
+    max-load-1 = 24
+
+    sudo /etc/init.d/watchdog start
