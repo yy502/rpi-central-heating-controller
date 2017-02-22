@@ -1,30 +1,30 @@
 {
     "mode": {
         "ch": "auto|off",
-        "hw": "auto|off",
+        "hw": "auto|off"
     },
     "ch": {
         "date1": {
             "time1": "temperature",
             "time2": "temperature",
-            "time3": "temperature",
+            "time3": "temperature"
         },
         "date2": {
             "time1": "temperature",
             "time2": "temperature",
-            "time3": "temperature",
+            "time3": "temperature"
         }
     }, 
     "hw": {
         "date1": {
             "time1": "+x min",
             "time2": "+x min",
-            "time3": "+x min",
+            "time3": "+x min"
         },
         "date2": {
             "time1": "+x min",
             "time2": "+x min",
-            "time3": "+x min",
+            "time3": "+x min"
         }
     }
 }
