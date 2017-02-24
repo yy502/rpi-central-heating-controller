@@ -34,7 +34,9 @@ simple control commands
 
 #### Settings ####
 
-CH and HW pins are using WiringPi index; DHT sensor pin is using BCM index.
+- CH and HW pins use WiringPi index.
+- Local DHT sensor pin uses BCM index.
+- Remote sensor is a URL for reading data.
 
 #### Cron Jobs ####
 

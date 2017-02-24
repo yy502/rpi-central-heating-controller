@@ -1,8 +1,9 @@
 {
-    "pins": {
+    "io": {
         "ch": 2,
         "hw": 3,
-        "dht": 24
+        "local_sensor": 24,
+        "remote_sensor": "http://192.168.0.41"
     },
     "mode": {
         "ch": "auto",
