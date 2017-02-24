@@ -1,19 +1,14 @@
 #!/usr/bin/env python
 
-from oled import ssd1306
+from lib.oled import ssd1306
 from smbus import SMBus
 import time
 import pigpio
-import DHT22
+import lib.dht22 as dht
 import urllib2
 from PIL import ImageFont, ImageDraw, Image
+import logger
 import logging
-
-logging.basicConfig(
-    filename="rpch.log",
-    format="%(asctime)s %(message)s",
-    level=logging.DEBUG
-    )
 
 i2cbus = SMBus(1)  # 1 = Raspberry Pi but NOT early REV1 board
 display = ssd1306(i2cbus)
@@ -63,28 +58,28 @@ def get_temperature():
     def get_gpio_temp():
         try:
             pi = pigpio.pi()
-            dht22 = DHT22.sensor(pi, 24)
+            dht22 = dht.sensor(pi, 24)
             dht22.trigger()
             time.sleep(0.2)
-            return dht22.temperature()
+            return "%.1f" % dht22.temperature()
         except:
             logging.error("Failed to get local temperature")
-            return -999
+            return "-999"
 
     def get_wifi_temp():
         try:
             status, temp, humid = urllib2.urlopen(URL).read().strip().split(",")
             if status == "0":
-                return float(temp)
+                return "%.1f" % float(temp)
             else:
                 logging.error("Sensor error")
-                return -999
+                return "-999"
         except:
             logging.error("Network error")
-            return -999
+            return "-999"
 
     wifi_temp = get_wifi_temp()
-    if wifi_temp != -999:
+    if wifi_temp != "-999":
         return wifi_temp
     else:
         return get_gpio_temp()
@@ -98,7 +93,7 @@ def paint_canvas():
     canvas.rectangle((63,0,127,23), outline=1, fill=1)
     text(67, 0, time.strftime("%d/%m %H:%M",time.localtime(time.time())), fill=0)
     temp = get_temperature()
-    text(80, 12, "%fC" % temp if temp != -999 else 88.8, fill=0)
+    text(80, 12, "%sC" % temp, fill=0)
 
     # vertical line
     #canvas.line((63, 0, 63, 63), fill=1)
@@ -108,14 +103,14 @@ def paint_canvas():
 
     # CH settings filler
     text_cell(col="l",row=1,txt="08:00 20C")
-    text_cell(col="l",row=2,txt="11:30 18C")
+    text_cell(col="l",row=2,txt="11:30 18C",bg=True)
     text_cell(col="l",row=3,txt="14:30 22C")
     text_cell(col="l",row=4,txt="20:30 20C")
-    text_cell(col="l",row=5,txt="23:30 16C",bg=True)
+    text_cell(col="l",row=5,txt="23:30 16C")
 
     # HW settings filler
-    text_cell(col="r",row=1,txt="07:30 +10m",bg=True)
-    text_cell(col="r",row=2,txt="17:30 +20m")
+    text_cell(col="r",row=1,txt="07:30 +10m")
+    text_cell(col="r",row=2,txt="17:30 +20m",bg=True)
     text_cell(col="r",row=3,txt="20:30 +30m")
 
 
