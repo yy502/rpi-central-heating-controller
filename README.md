@@ -32,6 +32,10 @@ I aim to use a Raspberry Pi to provide **fine** and **remote** control of my cen
 
 simple control commands
 
+#### Settings ####
+
+CH and HW pins are using WiringPi index; DHT sensor pin is using BCM index.
+
 #### Cron Jobs ####
 
 timed switches

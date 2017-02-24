@@ -1,4 +1,9 @@
 {
+    "pins": {
+        "ch": 2,
+        "hw": 3,
+        "dht": 24
+    },
     "mode": {
         "ch": "auto",
         "hw": "auto"
