@@ -59,14 +59,37 @@ external access over the Interbet with port forwarding and authentication
 In case RPi silently crashes and freezes, watchdog service will auto-reboot it and hopefully things will be back on track.
 Here's how to set up watchdog.
 
-    sudo modprobe bcm2708_wdog
-    echo "bcm2708_wdog" | sudo tee -a /etc/modules
-    sudo apt-get install watchdog chkconfig
-    sudo chkconfig --add watchdog
+    # add this line to /boot/config.txt
+    dtparam=watchdog=on
 
-    sudo vim /etc/watchdog.conf
-    # uncomment lines below
+    # reboot; check watchdog device is enabled
+    ls /dev/watchdog*
+
+    /dev/watchdog /dev/watchdog0
+
+    # install package
+    sudo apt-get install watchdog
+    # ignore a few lines of warnings and ignores
+
+    # edit config file: /etc/watchdog.conf
+    # uncomment
     watchdog-device = /dev/watchdog
     max-load-1 = 24
 
+    # add below or you get "cannot set timeout 60 (errno = 22 = 'Invalid argument')"
+    # because the default 60 seconds is an invalid option!
+    watchdog-timeout=15
+
+    # start watchdog service
     sudo /etc/init.d/watchdog start
+
+    # check watchdog status
+    sudo systemctl status watchdog
+
+    # now make watchdog service start at boot
+    # add below to /lib/systemd/system/watchdog.service
+    [Install]
+    WantedBy=multi-user.target
+
+    # then run
+    sudo systemctl enable watchdog
