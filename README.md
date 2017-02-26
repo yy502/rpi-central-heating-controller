@@ -50,9 +50,70 @@ timed switches
 
 to view room temperature, timer/temperature settings, overrides, etc.
 
-### Remote Access ###
+### Web Server ###
 
-external access over the Interbet with port forwarding and authentication
+After some research, I chose `nginx` over `Apache` for web server for its
+lightweight and performance.
+
+    sudo apt-get install nginx
+
+I normally change the site root to `/home/pi/www`, so I'll use this path through out the documentation.
+
+I'm going to use Python for CGI, so here's how to set up `uwsgi` with `nginx` to handle `.py` scripts.
+
+    sudo apt-get install uwsgi
+    sudo uwsgi --version
+
+    sudo vim /etc/uwsgi/apps-available/uwsgi_config.ini
+
+    # make it looks like the block below
+    [uwsgi]
+    plugins = cgi
+    socket = 127.0.0.1:8000
+    cgi = /home/pi/www   # this should match your site's root
+    chdir = /home/pi/www
+    cgi-allowed-ext = .py
+    cgi-helper = .py = python
+    uid = pi
+    gid = pi
+    die-on-term = true
+
+    sudo ln -s /etc/uwsgi/apps-available/uwsgi_config.ini /etc/uwsgi/apps-enabled/uwsgi_config.ini
+    sudo service uwsgi restart
+
+    # Config nginx to use uWSGI for Python CGI
+
+    # edit nginx site config
+    # add a block as below to handle .py files
+    location ~ \.py$ {
+        uwsgi_pass 127.0.0.1:8000;
+        include uwsgi_params;
+        uwsgi_modifier1 9;
+    }
+
+    sudo service nginx restart
+
+    # Testing: add 4 lines of code below into /home/pi/www/hello.py
+
+    #!/usr/bin/env python
+    import cgi
+    print "Content-Type: text/html\n"
+    print "<h1>Hello World from Python CGI</h1>"
+
+    # make it executable
+    chmod +x /home/pi/www/hello.py
+
+Now visit `http://rpi_ip/hello.py` and expect to see some hello world texts.
+
+### Port Forwarding ###
+
+This is done on your router. Basically, map an external port to your RPi's port 80 for external web access; and map an external port to your RPi's port 22 for external SSH access in case some manual work is needed.
+
+*Warning on Security*
+
+- add some password protection to your web app for obvious reasons if you allow external access to your home central heating and hot water controller.
+- do not map 80 for 80 and 22 for 22. Choose some other random ports to avoid _some_ attacks.
+- install `fail2ban` to block attempts to hack in. I only allow 2 failed attempts before banning an IP for 24 hours or longer. If you do so, make sure you don't lock yourself out. Better to use password-less login on your own computers or mobile phones using rsa key.
 
 ### Watchdog ###
 
