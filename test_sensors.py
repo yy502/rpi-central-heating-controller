@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-
+import time
 import pigpio
 import lib.dht22 as dht
 import urllib2
@@ -15,7 +15,7 @@ def get_gpio_temp():
         time.sleep(0.2)
         return "%.1f" % dht22.temperature()
     except:
-        logging.error("Failed to get local temperature")
+        print "Failed to get local temperature"
         return "-999"
 
 def get_wifi_temp():
@@ -24,10 +24,10 @@ def get_wifi_temp():
         if status == "0":
             return "%.1f" % float(temp)
         else:
-            logging.error("Sensor error")
+            print "Sensor error"
             return "-999"
     except:
-        logging.error("Network error")
+        print "Network error"
         return "-999"
 
 if __name__=="__main__":
