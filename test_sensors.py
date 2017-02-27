@@ -4,6 +4,8 @@ import time
 import pigpio
 import lib.dht22 as dht
 import urllib2
+import logger
+import logging
 
 URL = "http://192.168.0.41"
 
@@ -32,5 +34,10 @@ def get_wifi_temp():
 
 if __name__=="__main__":
     """ Get room temperature from WiFi and the on-board sensor """
-    print "On-board DHT22 sensor: %sC" % get_gpio_temp()
-    print "WiFi DHT22 sensor: %sC" % get_wifi_temp()
+    while True:
+        local = get_gpio_temp()
+        remote = get_wifi_temp()
+        logging.info("On-board DHT22 sensor: %sC", local)
+        logging.info("WiFi DHT22 sensor:     %sC", remote)
+        logging.info("Diff:                   %.1fC", float(local)-float(remote))
+        time.sleep(57)
