@@ -8,11 +8,11 @@ import logger
 import logging
 
 URL = "http://192.168.0.41"
+pi = pigpio.pi()
+dht22 = dht.sensor(pi, 24)
 
 def get_gpio_temp():
     try:
-        pi = pigpio.pi()
-        dht22 = dht.sensor(pi, 24)
         dht22.trigger()
         time.sleep(0.2)
         return "%.1f" % dht22.temperature()
