@@ -1,7 +1,7 @@
 {
     "mode": {
-        "ch": "auto|off",
-        "hw": "auto|off"
+        "ch": "off",
+        "hw": "off"
     },
     "ch": {
         "date1": {
