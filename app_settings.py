@@ -25,6 +25,3 @@ try:
 except:
     logging.error("Unable to load overrides config file: %s", OVERRIDES)
     raise Exception("Unable to load overrides config file: %s" % OVERRIDES)
-
-print base
-print overrides

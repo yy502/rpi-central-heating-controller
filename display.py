@@ -2,13 +2,17 @@
 
 from lib.oled import ssd1306
 from smbus import SMBus
+import sys
 import time
 import pigpio
 import lib.dht22 as dht
 import urllib2
 from PIL import ImageFont, ImageDraw, Image
-import logger
-import logging
+from logger import *
+from app_settings import base
+
+pi = pigpio.pi()
+dht22 = dht.sensor(pi, base["io"]["local_sensor"])
 
 i2cbus = SMBus(1)  # 1 = Raspberry Pi but NOT early REV1 board
 display = ssd1306(i2cbus)
@@ -50,33 +54,37 @@ def text_cell(col=None, row=0, txt="", bg=False):
     text(x,(row-1)*ROW_HEIGHT,txt,fill=(0 if bg else 1),bg=bg)
 
 
+def get_gpio_temp():
+    """ Return a float number in string type """
+    try:
+        dht22.trigger()
+        time.sleep(0.2)
+        temp = "%.1f" % dht22.temperature()
+        logging.info("On-board DHT22 sensor: %sC", temp)
+        return temp
+    except:
+        logging.error("On-board DHT22 sensor: %s", sys.exc_info()[0])
+        return "-999"
+
+def get_wifi_temp():
+    """ Return a float number in string type """
+    try:
+        status, temp, humid = urllib2.urlopen(base["io"]["remote_sensor"]).read().strip().split(",")
+        if status == "0":
+            logging.info("WiFi DHT22 sensor: %.1fC", float(temp))
+            return "%.1f" % float(temp)
+        else:
+            logging.error("WiFi DHT22 sensor: %s,%s,%s", status, temp, humid)
+            return "-999"
+    except:
+        logging.error("WiFi DHT22 sensor: %s", sys.exc_info()[0])
+        return "-999"
+
+
 def get_temperature():
     """ Get room temperature from WiFi sensor or fail-over to
         the on-board sensor.
     """
-
-    def get_gpio_temp():
-        try:
-            pi = pigpio.pi()
-            dht22 = dht.sensor(pi, 24)
-            dht22.trigger()
-            time.sleep(0.2)
-            return "%.1f" % dht22.temperature()
-        except:
-            logging.error("Failed to get local temperature")
-            return "-999"
-
-    def get_wifi_temp():
-        try:
-            status, temp, humid = urllib2.urlopen(URL).read().strip().split(",")
-            if status == "0":
-                return "%.1f" % float(temp)
-            else:
-                logging.error("Sensor error")
-                return "-999"
-        except:
-            logging.error("Network error")
-            return "-999"
 
     wifi_temp = get_wifi_temp()
     if wifi_temp != "-999":
