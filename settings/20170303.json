@@ -1,0 +1,16 @@
+{
+    "mode": {
+        "ch": "off",
+        "hw": "off"
+    },
+    "ch": {
+        "time1": "temperature",
+        "time2": "temperature",
+        "time3": "temperature"
+    }, 
+    "hw": {
+        "time1": "+x min",
+        "time2": "+x min",
+        "time3": "+x min"
+    }
+}

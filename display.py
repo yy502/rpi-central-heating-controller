@@ -9,16 +9,17 @@ import lib.dht22 as dht
 import urllib2
 from PIL import ImageFont, ImageDraw, Image
 from logger import *
-from app_settings import base
+import app_settings
 
 pi = pigpio.pi()
-dht22 = dht.sensor(pi, base["io"]["local_sensor"])
+dht22 = dht.sensor(pi, app_settings.LOCAL)
 
 i2cbus = SMBus(1)  # 1 = Raspberry Pi but NOT early REV1 board
 display = ssd1306(i2cbus)
 image = display.image
 canvas = display.canvas
-font = ImageFont.truetype('Roboto-Light.ttf', 11)
+
+font = ImageFont.truetype("Roboto-Light.ttf", 11)
 
 LEFT_COLUMN_X = 3
 RIGHT_COLUMN_X = 63
@@ -69,7 +70,7 @@ def get_gpio_temp():
 def get_wifi_temp():
     """ Return a float number in string type """
     try:
-        status, temp, humid = urllib2.urlopen(base["io"]["remote_sensor"]).read().strip().split(",")
+        status, temp, humid = urllib2.urlopen(app_settings.REMOTE).read().strip().split(",")
         if status == "0":
             logging.info("WiFi DHT22 sensor: %.1fC", float(temp))
             return "%.1f" % float(temp)

@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
-import sys
 import time
 import pigpio
 import lib.dht22 as dht
 import urllib2
 from logger import *
-from app_settings import base
+import app_settings
 
 pi = pigpio.pi()
-dht22 = dht.sensor(pi, base["io"]["local_sensor"])
+dht22 = dht.sensor(pi, app_settings.LOCAL)
 
 def get_gpio_temp():
     """ Return a float number in string type """
@@ -20,13 +19,13 @@ def get_gpio_temp():
         logging.info("On-board DHT22 sensor: %sC", temp)
         return temp
     except:
-        logging.error("On-board DHT22 sensor: %s", sys.exc_info()[0])
+        logging.exception("On-board DHT22 sensor error")
         return "-999"
 
 def get_wifi_temp():
     """ Return a float number in string type """
     try:
-        status, temp, humid = urllib2.urlopen(base["io"]["remote_sensor"]).read().strip().split(",")
+        status, temp, humid = urllib2.urlopen(app_settings.REMOTE).read().strip().split(",")
         if status == "0":
             logging.info("WiFi DHT22 sensor: %.1fC", float(temp))
             return "%.1f" % float(temp)
@@ -34,7 +33,7 @@ def get_wifi_temp():
             logging.error("WiFi DHT22 sensor: %s,%s,%s", status, temp, humid)
             return "-999"
     except:
-        logging.error("WiFi DHT22 sensor: %s", sys.exc_info()[0])
+        logging.exception("WiFi DHT22 sensor error")
         return "-999"
 
 if __name__=="__main__":

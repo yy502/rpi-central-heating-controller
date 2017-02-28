@@ -1,27 +1,31 @@
 {
     "mode": {
-        "ch": "off",
-        "hw": "off"
+        "ch": "auto",
+        "hw": "auto"
     },
     "ch": {
-        "date1": {
+        "mon": {
             "time1": "temperature",
             "time2": "temperature",
             "time3": "temperature"
         },
-        "date2": {
+        "tue,wed,thu,fri": {
+            "time1": "temperature",
+            "time2": "temperature",
+            "time3": "temperature"
+        },
+        "sat,sun": {
             "time1": "temperature",
             "time2": "temperature",
             "time3": "temperature"
         }
     }, 
     "hw": {
-        "date1": {
+        "mon,tue,wed,thu,fri": {
             "time1": "+x min",
-            "time2": "+x min",
-            "time3": "+x min"
+            "time2": "+x min"
         },
-        "date2": {
+        "sat,sun": {
             "time1": "+x min",
             "time2": "+x min",
             "time3": "+x min"
