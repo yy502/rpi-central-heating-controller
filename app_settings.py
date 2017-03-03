@@ -16,6 +16,10 @@ LOCAL = 25
 # WiFi sensor URL
 REMOTE = "http://192.168.0.41"
 
+# beeper settings
+BEEPER = 21  # BCM pin
+BEEPS = 8
+
 # settings path including file name
 SETTINGS_DIR = os.path.join(sys.path[0], "settings")
 DEFAULT = os.path.join(SETTINGS_DIR, "default.json")
