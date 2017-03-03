@@ -6,9 +6,25 @@ import lib.dht22 as dht
 import urllib2
 from logger import *
 import app_settings
+from lib.oled import ssd1306
+from smbus import SMBus
+from PIL import ImageFont
+
+i2cbus = SMBus(1)  # 1 = Raspberry Pi but NOT early REV1 board
+display = ssd1306(i2cbus)
+
+font = ImageFont.truetype("Roboto-Light.ttf", 18)
 
 pi = pigpio.pi()
 dht22 = dht.sensor(pi, app_settings.LOCAL)
+
+def text(x, y, txt, fill=1, bg=False):
+    """ Wrapper to display texts with or without background """
+    if bg:
+        w,h = canvas.textsize(txt,font=font)
+        canvas.rectangle((x, y, x+w, y+h), outline=1, fill=1)
+        fill=0
+    canvas.text((x, y-2), txt, font=font, fill=fill)
 
 def get_gpio_temp():
     """ Return a float number in string type """
@@ -41,5 +57,13 @@ if __name__=="__main__":
     while True:
         local = get_gpio_temp()
         remote = get_wifi_temp()
-        logging.info("Diff: %.1fC", float(local)-float(remote))
+        diff = float(local)-float(remote)
+        logging.info("Diff: %.1fC", diff)
+        image = display.image
+        canvas = display.canvas
+        display.clear()
+        text(0,0,"Local: %s" % local)
+        text(0,20,"Remote: %s" % remote)
+        text(0,40,"Diff: %.1f" % diff)
+        display.flush()
         time.sleep(57)

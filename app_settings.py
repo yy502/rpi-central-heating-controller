@@ -11,7 +11,7 @@ CH = 2
 HW = 3
 
 # DHT22 sensor BCM pin
-LOCAL = 24
+LOCAL = 25
 
 # WiFi sensor URL
 REMOTE = "http://192.168.0.41"
