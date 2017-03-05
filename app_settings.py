@@ -61,7 +61,7 @@ def load_default_for_date(date):
         raise
 
 
-def save_day_settings(dict=None, date=TODAY_DATE):
+def save_day_settings(dict=settings, date=TODAY_DATE):
     """ Save given date's settings to a json file.
 
     dict:   settings dictionary
@@ -69,7 +69,7 @@ def save_day_settings(dict=None, date=TODAY_DATE):
     """
     with open(os.path.join(SETTINGS_DIR, "%s.json" % date), 'w') as f:
         f.write(json.dumps(dict, indent=4, sort_keys=True))
-
+    logging.info("Settings for %s saved.", date)
 
 def generate_day_settings(date):
     """ take defaults and generate given date's settings json file """
