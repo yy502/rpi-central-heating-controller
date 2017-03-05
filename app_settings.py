@@ -2,15 +2,12 @@
 
 from logger import *
 from beeper import beep
+import switch
 import json
 import sys
 import os
 import time
 import datetime
-
-# relay wiringPi pins
-CH = 2
-HW = 3
 
 # DHT22 sensor BCM pin
 LOCAL = 25
@@ -37,7 +34,7 @@ def load_default_for_date(date):
     try:
         with open(DEFAULT_FNAME, 'r') as f:
             defaults = json.load(f)
-            for ctrl_type in ["ch", "hw"]:
+            for ctrl_type in switch.TARGETS.keys():
                 for key in defaults[ctrl_type].keys():
                     if weekday in key:
                         defaults[ctrl_type] = defaults[ctrl_type][key]
@@ -51,7 +48,8 @@ def load_default_for_date(date):
                     # today's weekday is not found in default weekday settings
                     logging.error("Today's (%s) setting not found in default settings.", weekday)
                     logging.warn("Turning CH and HW off for today due to lack of settings.")
-                    # turn off everything
+                    switch.ch_off()
+                    switch.hw_off()
                     beep()
                     sys.exit()
         logging.info("Loaded default settings for %s", date)
