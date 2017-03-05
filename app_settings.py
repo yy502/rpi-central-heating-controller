@@ -15,6 +15,9 @@ LOCAL = 25
 # WiFi sensor URL
 REMOTE = "http://192.168.0.41"
 
+# allowed temperature +/- range
+RANGE = 1  # degree in celsius
+
 # settings path including file name
 SETTINGS_DIR = os.path.join(sys.path[0], "settings")
 DEFAULT_FNAME = os.path.join(SETTINGS_DIR, "default.json")
