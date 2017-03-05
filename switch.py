@@ -14,7 +14,7 @@ def usage():
 def setup():
     for pin in [CH, HW]:
         system("/usr/local/bin/gpio mode %d output" % pin)
-    logging.info("Relay GPIOs set to out put mode.")
+        logging.info("Relay control pin %d set to output mode.", pin)
 
 def switch(target, value):
     if target in TARGETS.keys() and value in VALUES.keys():
