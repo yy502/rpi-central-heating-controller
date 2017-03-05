@@ -1,18 +1,18 @@
 import RPi.GPIO as GPIO
 from time import sleep
-from app_settings import BEEPER, BEEPS
 
 FREQUENCY = 1000
 DUTY_CYCLE = 10
 INTERVAL = 0.3
 DURATION = 0.05
-
+PIN = 21  # BCM index
+BEEPS = 8
 
 def beep(times=BEEPS):
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(BEEPER, GPIO.OUT)
+    GPIO.setup(PIN, GPIO.OUT)
 
-    p = GPIO.PWM(BEEPER, FREQUENCY)
+    p = GPIO.PWM(PIN, FREQUENCY)
 
     while times > 0:
         p.start(DUTY_CYCLE)

@@ -18,10 +18,6 @@ LOCAL = 25
 # WiFi sensor URL
 REMOTE = "http://192.168.0.41"
 
-# beeper settings
-BEEPER = 21  # BCM pin
-BEEPS = 8
-
 # settings path including file name
 SETTINGS_DIR = os.path.join(sys.path[0], "settings")
 DEFAULT_FNAME = os.path.join(SETTINGS_DIR, "default.json")
@@ -50,8 +46,8 @@ def load_default_for_date(date):
                 # should have been brought up by one level, directly under ctrl_type
                 # now validate it as below
                 first_key = next(iter(defaults[ctrl_type]))
-                print defaults[ctrl_type][first_key]
-                if type(defaults[ctrl_type][first_key]) is not str:
+                print type(defaults[ctrl_type][first_key])
+                if type(defaults[ctrl_type][first_key]) is dict:
                     # today's weekday is not found in default weekday settings
                     logging.error("Today's (%s) setting not found in default settings.", weekday)
                     logging.warn("Turning CH and HW off for today due to lack of settings.")
@@ -77,8 +73,10 @@ def save_day_settings(dict=None, date=TODAY_DATE):
 
 def generate_day_settings(date):
     """ take defaults and generate given date's settings json file """
+    global settings
     try:
-        save_day_settings(dict=load_default(date=date), date=date)
+        settings = load_default_for_date(date=date)
+        save_day_settings(dict=settings, date=date)
         logging.info("Settings for %s generated.", date)
     except:
         logging.exception("Unable to generate settings for %s", date)
@@ -98,5 +96,5 @@ def load_by_date(date=TODAY_DATE):
         logging.warn("Settings for %s not found.", date)
         generate_day_settings(date)
 
-
-load_by_date()
+if __name__ == "__main__":
+    load_by_date()
