@@ -96,5 +96,6 @@ def load_by_date(date=TODAY_DATE):
         logging.warn("Settings for %s not found.", date)
         generate_day_settings(date)
 
-if __name__ == "__main__":
-    load_by_date()
+
+# load today's settings by default
+load_by_date()
