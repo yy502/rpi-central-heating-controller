@@ -1,10 +1,8 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-FREQUENCY = 1000
-DUTY_CYCLE = 10
 INTERVAL = 0.3
-DURATION = 0.05
+DURATION = 0.5
 PIN = 21  # BCM index
 BEEPS = 8
 
@@ -12,12 +10,10 @@ def beep(times=BEEPS):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(PIN, GPIO.OUT)
 
-    p = GPIO.PWM(PIN, FREQUENCY)
-
     while times > 0:
-        p.start(DUTY_CYCLE)
+        GPIO.output(PIN, True)
         sleep(DURATION)
-        p.stop()
+        GPIO.output(PIN, False)
         sleep(INTERVAL)
         times -= 1
 
